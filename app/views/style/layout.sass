@@ -1,0 +1,33 @@
+@import 'compass/css3/box-shadow'
+@import 'compass/css3/opacity'
+@import 'compass/css3/transition'
+
+body
+  background: #f2f3f3
+  color: #444
+  font-family: 'Montserrat', sans-serif
+  font-size: 0.625em
+  margin: 0
+
+a
+  text-decoration: none
+
+nav
+  @include opaque
+  @include transition-property(opacity)
+  @include transition-duration(0.3s)
+  @include box-shadow(1px 1px 7px rgba(0, 0, 0, 0.5) inset)
+
+  background: rgba(103, 107, 115, 0.9)
+  color: #e8e8e8
+  padding: 1em
+  font-size: 1.5em
+
+  a
+    color: #fafbfb
+
+  &.collapsed
+    @include transparent
+
+.inactive
+  color: #676b73
