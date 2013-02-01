@@ -20,8 +20,11 @@ nav
 
   background: rgba(103, 107, 115, 0.9)
   color: #e8e8e8
-  padding: 1em
   font-size: 1.5em
+  padding: 1em
+  position: absolute
+  top: 0
+  width: 100%
 
   a
     color: #fafbfb
@@ -29,5 +32,14 @@ nav
   &.collapsed
     @include transparent
 
+    a
+      display: none
+
 .inactive
   color: #676b73
+
+.container
+  margin: 2em
+
+#kearny-main
+  margin: 0 auto

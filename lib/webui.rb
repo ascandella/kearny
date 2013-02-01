@@ -1,6 +1,7 @@
 require 'compass'
 require 'sinatra/base'
 require 'coffee-script'
+require 'json'
 require 'haml'
 require 'sass'
 
@@ -22,6 +23,11 @@ module Kearny
 
     get '/' do
       haml :index
+    end
+
+    get '/dynamic/:data' do
+      content_type :json
+      Dynamic.send(params[:data]).to_json
     end
 
     get '/js/:script.js' do

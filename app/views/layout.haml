@@ -6,7 +6,16 @@
     %title Kearny
 
   %body
-    = yield
+    %nav.nav
+      %a{ href: '/settings' } Settings
 
-    - %w[ zepto d3 underscore backbone application ].each do |script|
+    .container
+      = yield
+      #kearny-main
+
+    %script{ type: 'text/template', id: 'dataview-template' }
+      .dataView
+        %h3
+          <%- title %>
+    - %w[ zepto d3 underscore backbone displays application ].each do |script|
       %script{ src: "js/#{script}.js" }
