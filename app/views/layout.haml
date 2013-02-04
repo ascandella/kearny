@@ -2,20 +2,20 @@
 %html
   %head
     %link{ rel: 'stylesheet', type: 'text/css', href: 'style/layout.css' }
+    %link{ rel: 'stylesheet', type: 'text/css', href: 'style/theme-normal.css' }
     %link{ rel: 'stylesheet', type: 'text/css', href: 'http://fonts.googleapis.com/css?family=Montserrat:400,700' }
     %title Kearny
 
   %body
-    %nav.nav
-      %a{ href: '/settings' } Settings
+    %nav
+      .content
+        %a{ href: '/settings' } Settings
 
     .container
       = yield
       #kearny-main
 
-    %script{ type: 'text/template', id: 'dataview-template' }
-      .dataView
-        %h3
-          <%- title %>
+    = haml :javascript_templates
+
     - %w[ zepto d3 underscore backbone displays application ].each do |script|
       %script{ src: "js/#{script}.js" }
