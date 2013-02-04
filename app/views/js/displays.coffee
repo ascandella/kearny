@@ -1,9 +1,8 @@
-window.DataSource = Backbone.Model.extend()
+DataSource = Backbone.Model.extend()
   # initialize: ->
     # @data = 'foo'
 
-window.DataView = Backbone.View.extend
-  tagName: 'div'
+DataView = Backbone.View.extend
   template: _.template($('#dataview-template').html())
 
   render: ->
@@ -11,20 +10,24 @@ window.DataView = Backbone.View.extend
     this
 
 
-window.ViewCollection = Backbone.Collection.extend
+Dashboard = Backbone.Collection.extend
+  initialize: (attributes) ->
+    # Not using normal `get` call here because @get('name') returns `undefined`
+    # on initial `fetch()` call.
+    @name = attributes.name
   model: DataSource
-  url: '/dynamic/views'
+  url: -> "/dashboard/#{@name}"
 
 window.AppView = Backbone.View.extend
   el: '#kearny-main'
 
   initialize: ->
-    @displays = new ViewCollection
+    @dashboard = new Dashboard(name: 'default')
 
-    @listenTo(@displays, 'add', @addOne)
-    @listenTo(@displays, 'reset', @addAll)
+    @listenTo(@dashboard, 'add', @addOne)
+    @listenTo(@dashboard, 'reset', @addAll)
 
-    @displays.fetch()
+    @dashboard.fetch()
 
   addOne: (dataSource) ->
     view = new DataView(model: dataSource)
@@ -32,4 +35,4 @@ window.AppView = Backbone.View.extend
 
   addAll: ->
     @$el.empty()
-    @displays.each(@addOne, this)
+    @dashboard.each(@addOne, this)

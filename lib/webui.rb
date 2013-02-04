@@ -25,9 +25,9 @@ module Kearny
       haml :index
     end
 
-    get '/dynamic/:data' do
+    get '/dashboard/:name' do
       content_type :json
-      Dynamic.send(params[:data]).to_json
+      Kearny.dashboard(params[:name]).to_json
     end
 
     get '/js/:script.js' do
