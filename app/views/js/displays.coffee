@@ -1,14 +1,20 @@
-DataSource = Backbone.Model.extend()
-  # initialize: ->
-    # @data = 'foo'
+DataSource = Backbone.Model.extend
+  initialize: ->
+    @set('data', {})
+  fetchData: -> @fetch type: 'POST', data: configuration: @get('configuration')
+  valid: -> !!@get('type')
+  url: -> "/data/for/#{@get('type')}"
 
 DataView = Backbone.View.extend
+  initialize: ->
+    @listenTo(@model, 'change', @render)
+    @listenTo(@model, 'destroy', @remove)
+
   template: _.template($('#dataview-template').html())
 
   render: ->
     @$el.html(@template(@model.toJSON()))
     this
-
 
 Dashboard = Backbone.Collection.extend
   initialize: (attributes) ->
@@ -30,6 +36,7 @@ window.AppView = Backbone.View.extend
     @dashboard.fetch()
 
   addOne: (dataSource) ->
+    dataSource.fetchData() if dataSource.valid()
     view = new DataView(model: dataSource)
     @$el.append(view.render().el)
 

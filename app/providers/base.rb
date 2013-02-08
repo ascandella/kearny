@@ -20,6 +20,10 @@ module Kearny::Providers
   end
 
   class Base
+    def initialize(state)
+      @state = state
+    end
+
     def self.config
       Kearny.configuration(name.split('::').last.downcase)
     end

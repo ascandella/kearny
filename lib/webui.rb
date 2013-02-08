@@ -30,6 +30,17 @@ module Kearny
       Kearny.dashboard(params[:name]).to_json
     end
 
+    post '/data/for/:provider' do
+      # Todo: store these widgets, or throw them away every time?
+      content_type :json
+
+      if provider = Providers.fetch(params[:provider])
+        { data: provider.new(params[:configuration]).get_data('-2d', 'now') }.to_json
+      else
+        { error: true, message: 'No such provider' }.to_json
+      end
+    end
+
     get '/js/:script.js' do
       coffee "js/#{params[:script]}".to_sym
     end

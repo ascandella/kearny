@@ -1,4 +1,12 @@
 %script{ type: 'text/template', id: 'dataview-template' }
   .dataView
     %h2.title
-      <%- title %>
+      <%= title %>
+    :plain
+      <% if(data) { %>
+        <div class="data">
+          <% _.each(data, function(series) { %>
+            <%= series.target %>
+          <% }) %>
+        </div>
+      <% } %>
