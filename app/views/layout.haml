@@ -1,9 +1,9 @@
 !!!
 %html
   %head
-    %link{ rel: 'stylesheet', type: 'text/css', href: 'style/layout.css' }
-    %link{ rel: 'stylesheet', type: 'text/css', href: 'style/theme-normal.css' }
-    %link{ rel: 'stylesheet', type: 'text/css', href: 'http://fonts.googleapis.com/css?family=Montserrat:400,700' }
+    %link(rel='stylesheet' type='text/css' href='style/layout.css')
+    %link(rel='stylesheet' type='text/css' href='style/theme-normal.css')
+    %link(rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Montserrat:400700')
     %title Kearny
 
   %body
@@ -16,6 +16,9 @@
       #kearny-main
 
     = haml :javascript_templates
+    :javascript
+      window.Kearny = #{static_data.to_json};
 
-    - %w[ zepto d3 underscore backbone displays application ].each do |script|
-      %script{ src: "js/#{script}.js" }
+    %script(src='http://code.jquery.com/jquery-1.9.1.min.js')
+    - %w[ d3 underscore backbone displays application ].each do |script|
+      %script(src="js/#{script}.js")

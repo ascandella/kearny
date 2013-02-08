@@ -14,6 +14,7 @@ DataView = Backbone.View.extend
 
   render: ->
     @$el.html(@template(@model.toJSON()))
+    @$el.data('raw-data', @model.get('data'))
     this
 
 Dashboard = Backbone.Collection.extend

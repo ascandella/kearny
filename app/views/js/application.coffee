@@ -1,10 +1,22 @@
-class Kearny
+class KearnyApp
   constructor: ->
+    @setupAutoUpgrade()
     @setupNavigation()
     @setupViews()
 
+  # Periodically poll the server to see if a new application has been deployed.
+  # Useful when run in dashboard mode, where the page is left open indefinitely.
+  setupAutoUpgrade: ->
+    @verisonPingTimer = setInterval ->
+      Kearny.log "running ping for version newer than #{Kearny.version}"
+      $.getJSON '/version', (response) ->
+          if Kearny.version != response.version
+            Kearny.log "found new version: #{response.version}, reloading..."
+            window.location.reload()
+    , 60000
+
   setupNavigation: ->
-    $nav = $('nav')
+    $nav     = $('nav')
     navTimer = null
 
     hideMenu = ->
@@ -24,4 +36,6 @@ class Kearny
   setupViews: ->
     @appView = new AppView()
 
-window.KearnyApp = new Kearny()
+window.Kearny.App = new KearnyApp()
+window.Kearny.log = ->
+  console.log.apply(console, arguments)

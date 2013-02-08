@@ -21,6 +21,14 @@ module Kearny
       enable :logging
     end
 
+    helpers do
+      def static_data
+        {
+          version: Kearny.version,
+        }
+      end
+    end
+
     get '/' do
       haml :index
     end
@@ -47,6 +55,11 @@ module Kearny
 
     get '/style/:sheet.css' do
       sass "style/#{params[:sheet]}".to_sym, Compass.sass_engine_options
+    end
+
+    get '/version' do
+      content_type :json
+      { version: Kearny.version }.to_json
     end
   end
 end

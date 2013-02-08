@@ -2,11 +2,4 @@
   .dataView
     %h2.title
       <%= title %>
-    :plain
-      <% if(data) { %>
-        <div class="data">
-          <% _.each(data, function(series) { %>
-            <%= series.target %>
-          <% }) %>
-        </div>
-      <% } %>
+    .viewport
