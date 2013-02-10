@@ -3,11 +3,26 @@ Kearny.DataView = Backbone.View.extend
     @listenTo(@model, 'change', @render)
     @listenTo(@model, 'destroy', @remove)
 
+  className: 'dataView'
+
+  events:
+    'dblclick' : 'open'
+
+  open: -> @$el.addClass 'active'
+
   template: _.template($('#dataview-template').html())
 
   render: ->
     @$el.html(@template(@model.toJSON()))
-    @$el.data('raw-data', @model.get('data'))
+    if @model.get('data')?.error
+      @$el.addClass('error')
+          .find('.error-message').text(@model.get('data').message)
+    else if @model.get('data')
+      @$el.addClass('has-data')
+          .data('raw-data', @model.get('data'))
+    else if @model.get('text')
+      @$el.addClass('has-text')
+          .find('.text-content').html(@model.get('text'))
     this
 
 Kearny.AppView = Backbone.View.extend
