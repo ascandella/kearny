@@ -10,7 +10,7 @@ module Kearny::Providers
       return const_get(class_name) if const_defined?(class_name)
 
       begin
-        require_relative provider
+        require_relative provider.downcase
       rescue LoadError
         logger.error "No provider found for #{provider}"
       end

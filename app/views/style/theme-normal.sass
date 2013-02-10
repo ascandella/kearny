@@ -1,9 +1,18 @@
 @import 'compass/css3/images'
+@import 'compass/css3/opacity'
+@import 'compass/css3/transition'
 
 .dataView
   @include background(linear-gradient(-45deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.13)))
-  margin: 2em 0
+  @include opaque
+  @include transition-property(opacity)
+  @include transition-duration(0.3s)
+
+  margin-bottom: 2em
   padding: 1em
 
   .title
     margin-top: 0
+
+  &.error
+    @include opacity(0.2)
