@@ -49,7 +49,12 @@ module Kearny
       if provider = Providers.fetch(params[:provider])
         # Todo: read date parameters from somewhere. Defaults-per-dashboard plus
         # per-item override?
-        provider.new(params[:configuration]).get_data('-2d', 'now').to_json
+        source = provider.new(params[:configuration])
+        if Kearny.settings.demo
+          source.demo.to_json
+        else
+          source.get_data('-2d', 'now').to_json
+        end
       else
         { error: true, message: 'No such provider' }.to_json
       end

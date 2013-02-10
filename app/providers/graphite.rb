@@ -11,10 +11,14 @@ module Kearny::Providers
       ).run
 
       if response.success?
-        JSON.parse(response.response_body)
+        { data: JSON.parse(response.response_body) }
       else
         { error: true, message: response.response_body }
       end
+    end
+
+    def demo
+      JSON.parse(STATIC_DATA)
     end
 
   private
