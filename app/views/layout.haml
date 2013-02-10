@@ -20,5 +20,5 @@
       window.Kearny = #{static_data.to_json};
 
     %script(src='http://code.jquery.com/jquery-1.9.1.min.js')
-    - %w[ d3 underscore backbone displays application ].each do |script|
+    - includes.each do |script|
       %script(src="js/#{script}.js")

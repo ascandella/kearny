@@ -22,6 +22,10 @@ module Kearny
     end
 
     helpers do
+      def includes
+        %w[ d3 underscore backbone models views collections application ]
+      end
+
       def static_data
         {
           version: Kearny.version,

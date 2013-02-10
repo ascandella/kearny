@@ -34,7 +34,7 @@ class KearnyApp
     $nav.mouseout hideMenu
 
   setupViews: ->
-    @appView = new AppView()
+    @appView = new Kearny.AppView()
 
 window.Kearny.App = new KearnyApp()
 window.Kearny.log = ->
