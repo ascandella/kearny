@@ -18,7 +18,7 @@ module Kearny::Providers
     end
 
     def demo
-      JSON.parse(STATIC_DATA)
+      JSON.parse(STATIC_DATA[rand(STATIC_DATA.size)])
     end
 
   private

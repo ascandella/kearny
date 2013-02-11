@@ -2,7 +2,7 @@ Kearny.DataView = Backbone.View.extend
   defaultScale: 'day'
   height: 400
   width: 600
-  xPadding: 30
+  xPadding: 40
   yPadding: 20
 
   initialize: ->
@@ -53,13 +53,19 @@ Kearny.DataView = Backbone.View.extend
         .attr('height', @height)
         .attr('width', @width)
 
+    # Simply setting the height/width attributes on the SVG element aren't
+    # enough for the enclosing div to know its size.
+    @$el.find('svg').width(@width).height(@height)
+
     @xScale.range([@xPadding, @width - @xPadding])
     @yScale.range([@height - @yPadding, @yPadding])
 
     yAxis = d3.svg.axis().scale(@yScale)
                   .orient('left')
+                  .ticks(4)
 
     xAxis = d3.svg.axis().scale(@xScale)
+                  .ticks(3)
 
     @xAxisMarker
         .attr('transform', "translate(0, #{@height - @yPadding})")
@@ -69,17 +75,16 @@ Kearny.DataView = Backbone.View.extend
     verticalPadding  = @$el.innerHeight() - @$el.height()
     horizontalPadding = @$el.innerWidth()  - @$el.width()
 
-    @$el.width(@width + horizontalPadding)
-        .height(@height + verticalPadding)
-
   renderGraph: ->
     @setupGraph() unless @svg
     @resize()
 
     z = d3.scale.category20c()
+    Kearny.colorCounter ?= 0
+    Kearny.colorCounter += 1
 
     area = d3.svg.area()
-             .interpolate('monotone')
+             .interpolate('basis')
              .x((d) => @xScale(d[1] * 1000))
              .y1((d) => @yScale(d[0]))
              .y0(@height - @yPadding)
@@ -90,14 +95,15 @@ Kearny.DataView = Backbone.View.extend
          .enter()
            .append('path').transition()
            .attr('d', (d) -> area(d.datapoints))
-           .attr('fill', (_, i) -> z(i))
+           .attr('fill', (_, i) -> z(i + Kearny.colorCounter))
 
+    @$el.addClass('has-content')
 
 Kearny.AppView = Backbone.View.extend
   el: '#kearny-main'
   gutters: 40
-  minWidth: 200
-  maxWidth: 400
+  minWidth: 300
+  maxWidth: 500
 
   initialize: ->
     @dashboard = new Kearny.Dashboard(name: 'default')
@@ -107,6 +113,8 @@ Kearny.AppView = Backbone.View.extend
 
     $(window).on 'resize', _.debounce(_.bind(@resizeAll, this), 100)
 
+    # Set the initial size without rendering
+    @resizeAll()
     @dashboard.fetch()
     @subviews = []
 
@@ -122,15 +130,19 @@ Kearny.AppView = Backbone.View.extend
     @$el.empty()
     @dashboard.each(@addOne, this)
 
-  resize: (subview, width, height) ->
+  resize: (subview, width, height, render) ->
     subview.width = width
     subview.height = height
-    subview.renderGraph()
+    subview.renderGraph() if render
 
-  resizeAll: ->
+  resizeAll: (render) ->
     viewportWidth = @$el.width()
-    horizontalCount = Math.floor(viewportWidth / @maxWidth)
-    newWidth = (viewportWidth / horizontalCount) - (@gutters * horizontalCount)
+    horizontalCount = Math.floor(viewportWidth / @minWidth)
+    newWidth = Math.floor((viewportWidth / horizontalCount) -
+                          (@gutters * horizontalCount))
 
-    newHeight = newWidth * (2 / 3)
-    _.each(@subviews, (subview) => @resize(subview, newWidth, newHeight))
+    newHeight = Math.floor(newWidth * (2 / 3))
+    _.each @subviews, (subview) =>
+      @resize(subview, newWidth, newHeight, render)
+
+  windowResized: -> resizeAll(true)

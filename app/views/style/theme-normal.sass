@@ -3,12 +3,11 @@
 @import 'compass/css3/transition'
 
 .dataView
-  @include opaque
   @include transition-property(opacity)
   @include transition-duration(0.3s)
 
   display: inline-block
-  margin: 0 2em 2em 0
+  margin: 1em
   padding: 1em
 
   .title
@@ -16,3 +15,12 @@
 
   &.error
     @include opacity(0.2)
+
+  &.has-content
+    @include opaque
+
+.axis path,
+.axis line
+  fill: none
+  stroke: block
+  shape-rendering: crispEdges
