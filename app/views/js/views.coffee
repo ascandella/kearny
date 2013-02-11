@@ -1,20 +1,35 @@
 Kearny.DataView = Backbone.View.extend
   defaultScale: 'day'
+  defaultFormat: 'area'
   height: 400
   width: 600
   xPadding: 40
   yPadding: 20
+  yAxisVisible: false
 
   initialize: ->
-    @listenTo(@model, 'change', @render)
+    @listenTo(@model, 'change:data', @render)
+    @listenTo(@model, 'change:format', @renderGraph)
     @listenTo(@model, 'destroy', @remove)
 
   className: 'dataView'
 
   events:
-    'dblclick' : 'open'
+    'dblclick' : 'fetchData'
+    'click'    : 'cycleFormat'
 
-  open: -> @$el.addClass 'active'
+  fetchData: -> @model.fetchData()
+
+  getFormat: -> @model.get('format') || @defaultFormat
+  cycleFormat: ->
+    formats = _.keys(@generators)
+    nextFormat = @getFormat()
+
+    while (nextFormat == @getFormat())
+      nextFormat = formats[Math.floor(Math.random() * formats.length)]
+
+    @model.set('format', nextFormat)
+
 
   template: _.template($('#dataview-template').html())
 
@@ -39,9 +54,12 @@ Kearny.DataView = Backbone.View.extend
     @yScale = d3.scale.linear().domain @model.yDomain()
 
     @svg ?= d3.select(@$el[0]).append('svg')
-    @yAxisMarker = @svg.append('g')
-        .attr('class', 'y axis')
-        .attr('transform', "translate(#{@xPadding}, 0)")
+    if @yAxisVisible
+      @yAxisMarker = @svg.append('g')
+          .attr('class', 'y axis')
+          .attr('transform', "translate(#{@xPadding}, 0)")
+    else
+      @xPadding = 0
 
     @xAxisMarker = @svg.append('g')
         .attr('class', 'x axis')
@@ -60,50 +78,71 @@ Kearny.DataView = Backbone.View.extend
     @xScale.range([@xPadding, @width - @xPadding])
     @yScale.range([@height - @yPadding, @yPadding])
 
-    yAxis = d3.svg.axis().scale(@yScale)
-                  .orient('left')
-                  .ticks(4)
-
     xAxis = d3.svg.axis().scale(@xScale)
                   .ticks(3)
 
     @xAxisMarker
         .attr('transform', "translate(0, #{@height - @yPadding})")
         .call(xAxis)
-    @yAxisMarker.call(yAxis)
+
+    if @yAxisVisible
+      yAxis = d3.svg.axis().scale(@yScale)
+                    .orient('left')
+                    .ticks(4)
+      @yAxisMarker.call(yAxis)
 
     verticalPadding  = @$el.innerHeight() - @$el.height()
     horizontalPadding = @$el.innerWidth()  - @$el.width()
 
+  stylers:
+    area: (el) ->
+       z = d3.scale.category20c()
+       el.attr('fill', (_, i) -> z(Kearny.colorCounter))
+         .attr('stroke', 'none')
+    line: (el) ->
+      z = d3.scale.category20c()
+      el.attr('fill', 'none')
+        .attr('stroke', (_, i) -> z(Kearny.colorCounter))
+        .attr('stroke-width', 2)
+
+  generators:
+    area: ->
+      d3.svg.area()
+            .interpolate('basis')
+            .x((d) => @xScale(d[1] * 1000))
+            .y1((d) => @yScale(d[0]))
+            .y0(@height - @yPadding)
+
+    line: ->
+      d3.svg.line()
+            .interpolate('basis')
+            .x((d) => @xScale(d[1] * 1000))
+            .y((d) => @yScale(d[0]))
+
   renderGraph: ->
     @setupGraph() unless @svg
     @resize()
+    lineFunction = _.bind(@generators[@getFormat()], this)()
 
-    z = d3.scale.category20c()
     Kearny.colorCounter ?= 0
     Kearny.colorCounter += 1
+    data = @model.get('data')
 
-    area = d3.svg.area()
-             .interpolate('basis')
-             .x((d) => @xScale(d[1] * 1000))
-             .y1((d) => @yScale(d[0]))
-             .y0(@height - @yPadding)
+    el = @svg.selectAll('path')
+             .data(data, (d) -> d.target)
+             .attr('d', (d) -> lineFunction(d.datapoints))
+    el.enter()
+      .append('path').transition()
+      .attr('d', (d) -> lineFunction(d.datapoints))
 
-    @svg.selectAll('path')
-         .data(@model.get('data'), (d) -> d.target)
-         .attr('d', (d) -> area(d.datapoints))
-         .enter()
-           .append('path').transition()
-           .attr('d', (d) -> area(d.datapoints))
-           .attr('fill', (_, i) -> z(i + Kearny.colorCounter))
+    @stylers[@getFormat()](el)
 
     @$el.addClass('has-content')
 
 Kearny.AppView = Backbone.View.extend
   el: '#kearny-main'
-  gutters: 40
-  minWidth: 300
-  maxWidth: 500
+  gutters: 20
+  maxWidth: 400
 
   initialize: ->
     @dashboard = new Kearny.Dashboard(name: 'default')
@@ -137,7 +176,7 @@ Kearny.AppView = Backbone.View.extend
 
   resizeAll: (render) ->
     viewportWidth = @$el.width()
-    horizontalCount = Math.floor(viewportWidth / @minWidth)
+    horizontalCount = Math.floor(viewportWidth / @maxWidth)
     newWidth = Math.floor((viewportWidth / horizontalCount) -
                           (@gutters * horizontalCount))
 
