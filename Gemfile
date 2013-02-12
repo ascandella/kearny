@@ -14,5 +14,3 @@ gem 'compass'
 gem 'garb' # google analytics
 gem 'mixpanel_client' # mixpanel
 gem 'muni' # sf muni predictions
-
-gem 'typhoeus' # for http requests, because nobody likes net/http

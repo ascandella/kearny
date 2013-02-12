@@ -1,18 +1,26 @@
 require 'json'
-require 'typhoeus'
+require 'net/http'
 
 module Kearny::Providers
   class Graphite < Base
     def get_data(from, to)
       # TODO: Normalize from/to params
-      response = Typhoeus::Request.new(
-        build_url(@state['targets'], from: from, to: to, format: 'json')
-      ).run
+      uri = URI.parse(build_url)
 
-      if response.success?
-        { data: JSON.parse(response.response_body) }
+      uri.query = URI.encode_www_form(
+                    target: @state['targets'],
+                    from: from,
+                    to: to,
+                    format: 'json',
+                  )
+
+      response = Net::HTTP.get_response(uri)
+      puts uri.inspect
+
+      if response.is_a?(Net::HTTPSuccess)
+        { data: JSON.parse(response.body) }
       else
-        { error: true, message: response.response_body }
+        { error: true, message: response.body }
       end
     end
 
@@ -22,13 +30,8 @@ module Kearny::Providers
 
   private
 
-    # Work around limitation in Typhoeus / param parsing where we want `target`
-    # but don't want target[]=foo&target[]=bar, instead target=foo&target=bar
-    # (probably a violation of some spec, but that's how graphite works.
-    def build_url(targets, params = {})
-      base = self.class.config['graphite_host']
-      base << "/render?target=#{targets.join('&target=')}&"
-      base << params.map { |k, v| "#{k}=#{v}" }.join('&')
+    def build_url
+       "http://#{self.class.config['graphite_host']}/render"
     end
   end
 end

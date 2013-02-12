@@ -6,7 +6,10 @@ Kearny.DataSource = Backbone.Model.extend
       data: JSON.stringify(this)
 
   # Don't post back our `data`
-  toJSON: -> _.extend({}, @attributes, data: null)
+  toJSON: ->
+    attributes = _.extend({}, @attributes)
+    delete attributes.data
+    attributes
 
   valid: -> !!@get('type')
   url: -> '/data/for'
