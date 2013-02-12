@@ -48,13 +48,11 @@ module Kearny
       json_params = JSON.parse(request.body.read)
 
       if provider = Providers.fetch(json_params['type'])
-        # Todo: read date parameters from somewhere. Defaults-per-dashboard plus
-        # per-item override?
-        source = provider.new(json_params['configuration'])
+        source = provider.new(json_params)
         if Kearny.settings.demo
           source.demo.to_json
         else
-          source.get_data('-2d', 'now').to_json
+          source.get_data.to_json
         end
       else
         { error: true, message: 'No such provider' }.to_json

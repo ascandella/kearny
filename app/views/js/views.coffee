@@ -21,6 +21,7 @@ Kearny.DataView = Backbone.View.extend
   fetchData: -> @model.fetchData()
 
   getFormat: -> @model.get('format') || @defaultFormat
+
   cycleFormat: ->
     formats = _.keys(@generators)
     nextFormat = @getFormat()
@@ -131,6 +132,7 @@ Kearny.DataView = Backbone.View.extend
     el = @svg.selectAll('path')
              .data(data, (d) -> d.target)
              .attr('d', (d) -> lineFunction(d.datapoints))
+
     el.enter()
       .append('path').transition()
       .attr('d', (d) -> lineFunction(d.datapoints))
@@ -160,11 +162,15 @@ Kearny.AppView = Backbone.View.extend
   addOne: (dataSource) ->
     return unless dataSource.valid()
 
+    dataSource.set('from', '-2d')
+    dataSource.set('to', 'now')
     dataSource.fetchData()
+
     view        = new Kearny.DataView(model: dataSource)
     view.width  = @subviewWidth
     view.height = @subviewHeight
-    @$el.append(view.render().el)
+
+    @$el.append view.render().el
     @subviews.push view
 
   addAll: ->
