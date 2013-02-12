@@ -42,14 +42,15 @@ module Kearny
       Kearny.dashboard(params[:name]).to_json
     end
 
-    post '/data/for/:provider' do
+    post '/data/for' do
       # Todo: store these widgets, or throw them away every time?
       content_type :json
+      json_params = JSON.parse(request.body.read)
 
-      if provider = Providers.fetch(params[:provider])
+      if provider = Providers.fetch(json_params['type'])
         # Todo: read date parameters from somewhere. Defaults-per-dashboard plus
         # per-item override?
-        source = provider.new(params[:configuration])
+        source = provider.new(json_params['configuration'])
         if Kearny.settings.demo
           source.demo.to_json
         else

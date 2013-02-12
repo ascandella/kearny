@@ -6,8 +6,7 @@ module Kearny::Providers
     def get_data(from, to)
       # TODO: Normalize from/to params
       response = Typhoeus::Request.new(
-        "#{self.class.config['graphite_host']}/render",
-        params: build_parameters(@state['targets'], from, to)
+        build_url(@state['targets'], from: from, to: to, format: 'json')
       ).run
 
       if response.success?
@@ -23,13 +22,13 @@ module Kearny::Providers
 
   private
 
-    def build_parameters(targets, from, to)
-      {
-        format: 'json',
-        target: targets.join('&target='),
-        from: from,
-        until: to,
-      }
+    # Work around limitation in Typhoeus / param parsing where we want `target`
+    # but don't want target[]=foo&target[]=bar, instead target=foo&target=bar
+    # (probably a violation of some spec, but that's how graphite works.
+    def build_url(targets, params = {})
+      base = self.class.config['graphite_host']
+      base << "/render?target=#{targets.join('&target=')}&"
+      base << params.map { |k, v| "#{k}=#{v}" }.join('&')
     end
   end
 end
