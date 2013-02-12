@@ -3,7 +3,10 @@ Kearny.DataSource = Backbone.Model.extend
     @fetch
       type: 'POST'
       contentType: 'application/json'
-      data: JSON.stringify(@toJSON())
+      data: JSON.stringify(this)
+
+  # Don't post back our `data`
+  toJSON: -> _.extend({}, @attributes, data: null)
 
   valid: -> !!@get('type')
   url: -> '/data/for'

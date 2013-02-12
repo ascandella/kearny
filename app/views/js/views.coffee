@@ -161,7 +161,9 @@ Kearny.AppView = Backbone.View.extend
     return unless dataSource.valid()
 
     dataSource.fetchData()
-    view = new Kearny.DataView(model: dataSource)
+    view        = new Kearny.DataView(model: dataSource)
+    view.width  = @subviewWidth
+    view.height = @subviewHeight
     @$el.append(view.render().el)
     @subviews.push view
 
@@ -175,13 +177,14 @@ Kearny.AppView = Backbone.View.extend
     subview.renderGraph() if render
 
   resizeAll: (render) ->
-    viewportWidth = @$el.width()
+    viewportWidth   = @$el.width()
     horizontalCount = Math.floor(viewportWidth / @maxWidth)
-    newWidth = Math.floor((viewportWidth / horizontalCount) -
-                          (@gutters * horizontalCount))
 
-    newHeight = Math.floor(newWidth * (2 / 3))
+    @subviewWidth   = Math.floor((viewportWidth / horizontalCount) -
+                                 (@gutters * horizontalCount))
+
+    @subviewHeight = Math.floor(@subviewWidth * (2 / 3))
     _.each @subviews, (subview) =>
-      @resize(subview, newWidth, newHeight, render)
+      @resize(subview, @subviewWidth, @subviewHeight, render)
 
   windowResized: -> resizeAll(true)
