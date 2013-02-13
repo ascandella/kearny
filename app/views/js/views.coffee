@@ -8,8 +8,11 @@ Kearny.DataView = Backbone.View.extend
   yAxisVisible: false
 
   initialize: ->
-    @listenTo(@model, 'change:data', @render)
+    @listenTo(@model, 'change:data', @renderGraph)
     @listenTo(@model, 'change:format', @renderGraph)
+    @listenTo(@model, 'change:to', @fetchData)
+    @listenTo(@model, 'change:from', @fetchData)
+
     @listenTo(@model, 'destroy', @remove)
 
   className: 'dataView'
@@ -50,10 +53,11 @@ Kearny.DataView = Backbone.View.extend
 
     this
 
-  setupGraph: ->
+  updateDomain: ->
     @xScale = d3.time.scale().domain @model.xDomain()
     @yScale = d3.scale.linear().domain @model.yDomain()
 
+  setupGraph: ->
     @svg ?= d3.select(@$el[0]).append('svg')
     if @yAxisVisible
       @yAxisMarker = @svg.append('g')
@@ -98,12 +102,12 @@ Kearny.DataView = Backbone.View.extend
   stylers:
     area: (el) ->
        z = d3.scale.category20c()
-       el.attr('fill', (_, i) -> z(Kearny.colorCounter))
+       el.attr('fill', (_, i) -> z(i))
          .attr('stroke', 'none')
     line: (el) ->
       z = d3.scale.category20c()
       el.attr('fill', 'none')
-        .attr('stroke', (_, i) -> z(Kearny.colorCounter))
+        .attr('stroke', (_, i) -> z(i))
         .attr('stroke-width', 2)
 
   generators:
@@ -122,11 +126,10 @@ Kearny.DataView = Backbone.View.extend
 
   renderGraph: ->
     @setupGraph() unless @svg
+    @updateDomain()
     @resize()
     lineFunction = _.bind(@generators[@getFormat()], this)()
 
-    Kearny.colorCounter ?= 0
-    Kearny.colorCounter += 1
     data = @model.get('data')
 
     el = @svg.selectAll('path')
@@ -159,11 +162,19 @@ Kearny.AppView = Backbone.View.extend
     @dashboard.fetch()
     @subviews = []
 
+    @timeSlice = new Kearny.TimeSlice()
+    @timeControl = new Kearny.TimeControl(model: @timeSlice)
+    @timeControl.render()
+
+    # Right now these both call the same thing. Maybe eventually we'll be able
+    # to handle a fancy effect where we expand horizontally.
+    @listenTo(@timeSlice, 'change:from', @updateTimeRange)
+    @listenTo(@timeSlice, 'change:to',   @updateTimeRange)
+
   addOne: (dataSource) ->
     return unless dataSource.valid()
 
-    dataSource.set('from', '-2d')
-    dataSource.set('to', 'now')
+    dataSource.set(from: '-4d', to: 'now')
     dataSource.fetchData()
 
     view        = new Kearny.DataView(model: dataSource)
@@ -181,6 +192,10 @@ Kearny.AppView = Backbone.View.extend
     subview.width = width
     subview.height = height
     subview.renderGraph() if render
+
+  updateTimeRange: ->
+    _.each @subviews, (subview) =>
+      subview.model.set(from: @timeSlice.get('from'), to: @timeSlice.get('to'))
 
   resizeAll: (render) ->
     viewportWidth   = @$el.width()

@@ -2,3 +2,12 @@
   %h2.title
     <%= title %>
   .viewport
+
+%script{ type: 'text/template', id: 'time-control-template' }
+  %ul
+    :plain
+      <% _.each(timeRanges, function(range) {  %>
+        <li>
+          <%= range.title %>
+        </li>
+      <% }) %>

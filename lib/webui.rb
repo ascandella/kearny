@@ -23,7 +23,9 @@ module Kearny
 
     helpers do
       def includes
-        %w[ d3 underscore backbone models views collections application ]
+        %w[ d3 underscore backbone
+            models controls views collections application
+          ]
       end
 
       def static_data
