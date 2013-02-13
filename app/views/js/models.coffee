@@ -14,7 +14,7 @@ Kearny.DataSource = Backbone.Model.extend
   valid: -> !!@get('type')
   url: -> '/data/for'
 
-  yDomain: -> @domain(0)
+  yDomain: -> [0, @domain(0)[1]]
   xDomain: -> @domain(1, 1000)
 
   domain: (itemIndex, multiplier = 1) ->
