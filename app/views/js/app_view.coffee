@@ -67,7 +67,7 @@ Kearny.AppView = Backbone.View.extend
 
   resizeAll: (render) ->
     viewportWidth   = @$el.width()
-    horizontalCount = Math.floor(viewportWidth / @maxWidth)
+    horizontalCount = Math.max(Math.floor(viewportWidth / @maxWidth), 1)
     effectiveWidth  = viewportWidth - (@gutters * horizontalCount)
     @subviewWidth   = Math.floor(effectiveWidth / horizontalCount)
     @subviewHeight  = Math.floor(@subviewWidth * (2 / 3))
