@@ -75,7 +75,9 @@ Kearny.DataView = Backbone.View.extend
 
     # Simply setting the height/width attributes on the SVG element aren't
     # enough for the enclosing div to know its size.
-    @$el.find('svg').width(@width).height(@height)
+    @$el.find('svg')
+        .width(@width)
+        .height(@height)
 
     @xScale.range([@xPadding, @width - @xPadding])
     @yScale.range([@height - @yPadding, @yPadding])
@@ -137,6 +139,10 @@ Kearny.DataView = Backbone.View.extend
 
     # Remove old entries
     el.exit().remove()
+
+    # Make areas overlap if necessary
+    opacity = if @model.get('data').length > 1 then 0.85 else 1
+    el.style('opacity', opacity)
 
     @stylers[@getFormat()](el)
 
