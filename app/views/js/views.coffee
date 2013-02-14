@@ -10,8 +10,7 @@ Kearny.DataView = Backbone.View.extend
   initialize: ->
     @listenTo(@model, 'change:data', @renderGraph)
     @listenTo(@model, 'change:format', @renderGraph)
-    @listenTo(@model, 'change:to', @fetchData)
-    @listenTo(@model, 'change:from', @fetchData)
+    @listenTo(@model, 'refresh', @fetchData)
 
     @listenTo(@model, 'destroy', @remove)
 
@@ -139,6 +138,8 @@ Kearny.DataView = Backbone.View.extend
     el.enter()
       .append('path').transition()
       .attr('d', (d) -> lineFunction(d.datapoints))
+    el
+      .exit().remove()
 
     @stylers[@getFormat()](el)
 
@@ -171,11 +172,9 @@ Kearny.AppView = Backbone.View.extend
     @listenTo(@timeSlice, 'change:from', @updateTimeRange)
     @listenTo(@timeSlice, 'change:to',   @updateTimeRange)
 
+
   addOne: (dataSource) ->
     return unless dataSource.valid()
-
-    dataSource.set(from: '-4d', to: 'now')
-    dataSource.fetchData()
 
     view        = new Kearny.DataView(model: dataSource)
     view.width  = @subviewWidth
@@ -188,6 +187,8 @@ Kearny.AppView = Backbone.View.extend
     @$el.empty()
     @dashboard.each(@addOne, this)
 
+    @timeControl.setInitialSlice()
+
   resize: (subview, width, height, render) ->
     subview.width = width
     subview.height = height
@@ -195,7 +196,10 @@ Kearny.AppView = Backbone.View.extend
 
   updateTimeRange: ->
     _.each @subviews, (subview) =>
-      subview.model.set(from: @timeSlice.get('from'), to: @timeSlice.get('to'))
+      subview.model.set
+        to: @timeSlice.get('to')
+        from: @timeSlice.get('from')
+        transform: @timeSlice.get('transform')
 
   resizeAll: (render) ->
     viewportWidth   = @$el.width()

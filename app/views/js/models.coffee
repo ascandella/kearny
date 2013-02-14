@@ -1,18 +1,22 @@
 Kearny.DataSource = Backbone.Model.extend
+  initialize: ->
+    @on('change:transform', @updateTransform)
+    @on('change:targets', @recordTargets)
+    @recordTargets()
+
   fetchData: ->
     @fetch
-      type: 'POST'
       contentType: 'application/json'
       data: JSON.stringify(this)
+      type: 'POST'
 
-  # Don't post back our `data`
   toJSON: ->
     attributes = _.extend({}, @attributes)
     delete attributes.data
     attributes
 
-  valid: -> !!@get('type')
-  url: -> '/data/for'
+  valid: -> @has('type')
+  url: '/data/for'
 
   yDomain: -> [0, @domain(0)[1]]
   xDomain: -> @domain(1, 1000)
@@ -23,3 +27,21 @@ Kearny.DataSource = Backbone.Model.extend
     max = d3.max @get('data'), (series) ->
       d3.max series.datapoints, (point) -> point[itemIndex]
     [min * multiplier, max * multiplier]
+
+  updateTransform: ->
+    transforms = @get('transform')
+
+    if transforms
+      transform = transforms[@get('type')]
+
+      if transform
+        # Don't use setter, avoid loop
+        @attributes.targets = _.map @get('originalTargets'), (target) ->
+          transform.replace('%s', target)
+
+    else
+      @attributes.targets = @get('originalTargets')
+
+    @trigger('refresh')
+
+  recordTargets: -> @set('originalTargets', @get('targets'))

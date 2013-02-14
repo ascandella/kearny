@@ -6,13 +6,13 @@ Kearny.TimeSlice = Backbone.Model.extend
     },
     {
       title: '2 Days',  from: '-2days',  to: 'now',
-      transforms: {
+      transform: {
         graphite: 'summarize(%s, "30min")'
       }
     },
     {
       title: '2 Weeks', from: '-2weeks', to: 'now',
-      transforms: {
+      transform: {
         graphite: 'summarize(%s, "1hour")'
       }
     },
@@ -27,9 +27,14 @@ Kearny.TimeSlice = Backbone.Model.extend
   initialize: ->
     # Static data for now
     @set('timeRanges', @timeRanges)
+
+  setInitialSlice: ->
     activeSlice = @getRange(@initialRange)
 
-    @set(from: activeSlice.from, to: activeSlice.to)
+    @set
+      from: activeSlice.from
+      to: activeSlice.to
+      transform: activeSlice.transform
 
 Kearny.TimeControl = Backbone.View.extend
   el: '#kearny-time-control'
@@ -39,16 +44,24 @@ Kearny.TimeControl = Backbone.View.extend
 
   template: _.template($('#time-control-template').html())
 
-  render: ->
-    @$el.html(@template(@model.toJSON()))
+  render: -> @$el.html(@template(@model.toJSON()))
 
   changeSlice: (e) ->
+    e.preventDefault()
     $link = $(e.currentTarget)
     rangeTitle = $link.data('title')
     newRange = @model.getRange(rangeTitle)
     return unless newRange
 
-    @model.set(from: newRange.from, to: newRange.to, transforms: newRange.transforms)
+    @model.set
+      from: newRange.from
+      to: newRange.to
+      transform: newRange.transform
 
     $link.addClass('active')
          .siblings().removeClass('active')
+
+  setInitialSlice: ->
+    @$el.find("[data-title='#{@model.initialRange}']")
+        .addClass('active')
+    @model.setInitialSlice()
