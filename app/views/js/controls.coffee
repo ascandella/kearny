@@ -57,8 +57,8 @@ Kearny.TimeControl = Backbone.View.extend
 
   moveSlice: (direction) ->
     nextSlice = @currentLink[direction]()
-    opposite = if direction == 'prev' then 'next' else 'prev'
-    shuffler = @currentLink[opposite + 'All']().last()
+    opposite  = if direction == 'prev' then 'next' else 'prev'
+    shuffler  = @currentLink[opposite + 'All']().last()
 
     surgicalOperation = if direction == 'next' then 'appendTo' else 'prependTo'
     shuffler[surgicalOperation](@currentLink.parent())
@@ -66,7 +66,7 @@ Kearny.TimeControl = Backbone.View.extend
     if nextSlice.length
       @moveToSlice(nextSlice)
 
-  left: -> @moveSlice('prev')
+  left:  -> @moveSlice('prev')
   right: -> @moveSlice('next')
 
   changeSlice: (e) ->
@@ -84,10 +84,13 @@ Kearny.TimeControl = Backbone.View.extend
       to: newRange.to
       transform: newRange.transform
 
-    @currentLink.addClass('active')
-         .siblings().removeClass('active')
+    @currentLink
+      .addClass('active')
+      .siblings()
+        .removeClass('active')
 
   setInitialSlice: ->
     @currentLink = @$el.find("[data-title='#{@model.currentSlice}']")
-        .addClass('active')
+      .addClass('active')
+
     @model.setInitialSlice()

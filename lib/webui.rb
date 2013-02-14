@@ -24,8 +24,10 @@ module Kearny
 
     helpers do
       def includes
-        %w[ d3 underscore backbone
-            models controls views collections application
+        %w[
+            d3 underscore backbone
+            models controls app_view views
+            collections application
           ]
       end
 
