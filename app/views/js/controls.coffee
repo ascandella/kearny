@@ -57,12 +57,14 @@ Kearny.TimeControl = Backbone.View.extend
 
   moveSlice: (direction) ->
     nextSlice = @currentLink[direction]()
+    opposite = if direction == 'prev' then 'next' else 'prev'
+    shuffler = @currentLink[opposite + 'All']().last()
+
+    surgicalOperation = if direction == 'next' then 'appendTo' else 'prependTo'
+    shuffler[surgicalOperation](@currentLink.parent())
+
     if nextSlice.length
       @moveToSlice(nextSlice)
-    else if direction == 'prev'
-      @moveToSlice(@currentLink.siblings().last())
-    else
-      @moveToSlice(@currentLink.siblings().first())
 
   left: -> @moveSlice('prev')
   right: -> @moveSlice('next')
