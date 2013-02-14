@@ -21,10 +21,6 @@ module Kearny::Providers
       end
     end
 
-    def demo
-      JSON.parse(STATIC_DATA[rand(STATIC_DATA.size)])
-    end
-
   private
 
     def build_url

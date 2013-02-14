@@ -24,6 +24,21 @@ module Kearny::Providers
       @state = state
     end
 
+    def demo
+      num_points = 50
+      start_time = (Time.now - (60 * num_points)).to_i
+      {
+        data: (1..rand(5)).to_a.map do |series|
+          {
+            target: "demo-#{series}",
+            datapoints: (0..num_points).to_a.map do |point|
+              [rand(45), start_time + (60 * point)]
+            end
+          }
+        end
+      }
+    end
+
     def self.config
       Kearny.configuration(name.split('::').last.downcase)
     end
