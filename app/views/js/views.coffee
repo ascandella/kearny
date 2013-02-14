@@ -16,7 +16,7 @@ Kearny.DataView = Backbone.View.extend
   className: 'dataView'
 
   events:
-    'click': 'cycleFormat'
+    'click svg': 'cycleFormat'
 
   contentChanging: -> @$el.removeClass('has-content')
 
