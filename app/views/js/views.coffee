@@ -7,7 +7,7 @@ Kearny.DataView = Backbone.View.extend
   yAxisVisible: false
 
   initialize: ->
-    @listenTo(@model, 'change:data change:format', @renderGraph)
+    @listenTo(@model, 'change:data change:error change:format', @dataUpdated)
     @listenTo(@model, 'change:transform', @contentChanging)
     @listenTo(@model, 'refresh', @fetchData)
 
@@ -34,25 +34,33 @@ Kearny.DataView = Backbone.View.extend
 
   template: _.template($('#dataview-template').html())
 
-  render: ->
-    @$el.html(@template(@model.toJSON()))
+  dataUpdated: ->
     if @model.get('error')
       @$el.addClass('error')
-          .find('.error-message').text(@model.get('message'))
+          .find('.error-message')
+            .text(@model.get('message'))
 
     else if @model.get('data')
-      @$el.addClass('has-data')
+      @$el.removeClass('error')
+          .addClass('has-data')
       @renderGraph()
 
     else if @model.get('text')
-      @$el.addClass('has-text')
+      @$el.removeClass('error')
+          .addClass('has-text')
           .find('.text-content').html(@model.get('text'))
 
+  render: ->
+    @$el.html(@template(@model.toJSON()))
     this
 
   updateDomain: ->
+    console.log("X domain", @model.xDomain()) if @model.get('type') == 'mixpanel'
+
     @xScale = d3.time.scale().domain @model.xDomain()
-    @yScale = d3.scale.linear().domain @model.yDomain()
+    @yScale = d3.scale
+                .linear()
+                .domain(@model.yDomain())
 
   setupGraph: ->
     @svg ?= d3.select(@$el[0]).append('svg')
@@ -97,11 +105,11 @@ Kearny.DataView = Backbone.View.extend
 
   stylers:
     area: (el) ->
-       z = d3.scale.category20c()
+       z = d3.scale.category20()
        el.attr('fill', (_, i) -> z(i))
          .attr('stroke', 'none')
     line: (el) ->
-      z = d3.scale.category20c()
+      z = d3.scale.category20()
       el.attr('fill', 'none')
         .attr('stroke', (_, i) -> z(i))
         .attr('stroke-width', 2)
@@ -109,7 +117,7 @@ Kearny.DataView = Backbone.View.extend
   generators:
     area: ->
       d3.svg.area()
-            .interpolate('basis-open')
+            .interpolate('cardinal')
             .x((d) => @xScale(d[1] * 1000))
             .y1((d) => @yScale(d[0]))
             .y0(@height - @yPadding)
@@ -121,6 +129,8 @@ Kearny.DataView = Backbone.View.extend
             .y((d) => @yScale(d[0]))
 
   renderGraph: ->
+    return if @model.has('error')
+
     @setupGraph() unless @svg
     @updateDomain()
     @resize()

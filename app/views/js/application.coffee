@@ -8,7 +8,7 @@ class KearnyApp
   # Periodically poll the server to see if a new application has been deployed.
   # Useful when run in dashboard mode, where the page is left open indefinitely.
   setupAutoUpgrade: ->
-    @verisonPingTimer = setInterval ->
+    setInterval ->
       Kearny.log "running ping for version newer than #{Kearny.version}"
       $.getJSON '/version', (response) ->
           if Kearny.version != response.version

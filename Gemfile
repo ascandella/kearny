@@ -10,7 +10,8 @@ gem 'haml'
 gem 'sass'
 gem 'compass'
 
+gem 'chronic'
+
 # data sources
 gem 'garb' # google analytics
 gem 'mixpanel_client' # mixpanel
-# gem 'muni' # sf muni predictions
