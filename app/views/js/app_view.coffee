@@ -1,6 +1,6 @@
 Kearny.AppView = Backbone.View.extend
   el: '#kearny-main'
-  gutters: 20
+  gutters: 30
   maxWidth: 400
 
   initialize: ->
@@ -57,11 +57,10 @@ Kearny.AppView = Backbone.View.extend
   resizeAll: (render) ->
     viewportWidth   = @$el.width()
     horizontalCount = Math.floor(viewportWidth / @maxWidth)
+    effectiveWidth  = viewportWidth - (@gutters * horizontalCount)
+    @subviewWidth   = Math.floor(effectiveWidth / horizontalCount)
+    @subviewHeight  = Math.floor(@subviewWidth * (2 / 3))
 
-    @subviewWidth   = Math.floor((viewportWidth / horizontalCount) -
-                                 (@gutters * horizontalCount))
-
-    @subviewHeight = Math.floor(@subviewWidth * (2 / 3))
     _.each @subviews, (subview) =>
       @resize(subview, @subviewWidth, @subviewHeight, render)
 

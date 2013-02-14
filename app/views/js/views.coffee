@@ -8,8 +8,8 @@ Kearny.DataView = Backbone.View.extend
 
   initialize: ->
     @listenTo(@model, 'change:data change:format', @renderGraph)
-    @listenTo(@model, 'refresh', @fetchData)
     @listenTo(@model, 'change:transform', @contentChanging)
+    @listenTo(@model, 'refresh', @fetchData)
 
     @listenTo(@model, 'destroy', @remove)
 
