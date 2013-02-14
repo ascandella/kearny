@@ -53,6 +53,10 @@ Kearny.TimeControl = Backbone.View.extend
     nextSlice = @currentLink[direction]()
     if nextSlice.length
       @moveToSlice(nextSlice)
+    else if direction == 'prev'
+      @moveToSlice(@currentLink.siblings().last())
+    else
+      @moveToSlice(@currentLink.siblings().first())
 
   left: -> @moveSlice('prev')
   right: -> @moveSlice('next')
