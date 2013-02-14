@@ -26,7 +26,7 @@ module Kearny
       def includes
         %w[
             d3 underscore backbone
-            models controls app_view views
+            configuration models controls app_view views
             collections application
           ]
       end
@@ -40,6 +40,11 @@ module Kearny
 
     get '/' do
       haml :index
+    end
+
+    get '/configuration' do
+      content_type :json
+      Kearny.client_configuration.to_json
     end
 
     get '/dashboard/:name' do

@@ -13,7 +13,13 @@ module Kearny
 
     # User-configurable dashboards, stored in JSON
     def dashboard(name = 'default')
-      with_dashboard(name) { |json| JSON.parse(json.read) }
+      with_dashboard(name) { |file| JSON.parse(file.read) }
+    end
+
+    def client_configuration
+      with_json_file('client') do |file|
+        JSON.parse(file.read)
+      end
     end
 
     def save_dashboard(name, content)
@@ -24,11 +30,14 @@ module Kearny
 
   private
 
-    def with_dashboard(name, mode = 'r')
-      File.open(File.join(settings.root,'config', 'dashboards',
-                          "#{name}.json")) do |file|
+    def with_json_file(name, mode = 'r')
+      File.open(File.join(settings.root, 'config', "#{name}.json")) do |file|
         yield file if block_given?
       end
+    end
+
+    def with_dashboard(name, mode = 'r', &block)
+      with_json_file(File.join('dashboards', name), mode, &block)
     end
 
     # Application-level configuration, such as API keys
