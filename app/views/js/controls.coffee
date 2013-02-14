@@ -19,6 +19,12 @@ Kearny.TimeSlice = Backbone.Model.extend
         graphite: 'summarize(%s, "2hour")'
       }
     },
+    {
+      title: '2 Months', from: '-60days', to: 'now',
+      transform: {
+        graphite: 'summarize(%s, "1day")'
+      }
+    },
   ]
 
   currentSlice: '2 Days'
