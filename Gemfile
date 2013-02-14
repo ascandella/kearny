@@ -13,4 +13,4 @@ gem 'compass'
 # data sources
 gem 'garb' # google analytics
 gem 'mixpanel_client' # mixpanel
-gem 'muni' # sf muni predictions
+# gem 'muni' # sf muni predictions
