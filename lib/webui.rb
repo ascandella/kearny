@@ -47,6 +47,12 @@ module Kearny
       Kearny.client_configuration.to_json
     end
 
+    put '/configuration' do
+      # Parse it to make sure it's valid JSON
+      Kearny.save_client_configuration(JSON.parse(request.body.read))
+      Kearny.client_configuration.to_json
+    end
+
     get '/dashboard/:name' do
       content_type :json
       Kearny.dashboard(params[:name]).to_json

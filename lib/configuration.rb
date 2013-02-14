@@ -22,6 +22,12 @@ module Kearny
       end
     end
 
+    def save_client_configuration(content)
+      with_json_file('client', 'w') do |file|
+        file.write(JSON.pretty_generate(content))
+      end
+    end
+
     def save_dashboard(name, content)
       with_dashboard(name, 'w') do |file|
         file.write(JSON.pretty_generate(content))
@@ -31,7 +37,7 @@ module Kearny
   private
 
     def with_json_file(name, mode = 'r')
-      File.open(File.join(settings.root, 'config', "#{name}.json")) do |file|
+      File.open(File.join(settings.root, 'config', "#{name}.json"), mode) do |file|
         yield file if block_given?
       end
     end
