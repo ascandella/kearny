@@ -21,7 +21,7 @@ Kearny.TimeSlice = Backbone.Model.extend
     },
   ]
 
-  initialRange: '2 Days'
+  currentSlice: '2 Days'
 
   getRange: (name) ->
     _.detect @get('timeRanges'), (range) ->
@@ -32,7 +32,7 @@ Kearny.TimeSlice = Backbone.Model.extend
     @set('timeRanges', @timeRanges)
 
   setInitialSlice: ->
-    activeSlice = @getRange(@initialRange)
+    activeSlice = @getRange(@currentSlice)
 
     @set
       from: activeSlice.from
@@ -49,10 +49,21 @@ Kearny.TimeControl = Backbone.View.extend
 
   render: -> @$el.html(@template(@model.toJSON()))
 
+  moveSlice: (direction) ->
+    nextSlice = @currentLink[direction]()
+    if nextSlice.length
+      @moveToSlice(nextSlice)
+
+  left: -> @moveSlice('prev')
+  right: -> @moveSlice('next')
+
   changeSlice: (e) ->
     e.preventDefault()
-    $link = $(e.currentTarget)
-    rangeTitle = $link.data('title')
+    @moveToSlice $(e.currentTarget)
+
+  moveToSlice: (link) ->
+    @currentLink = link
+    rangeTitle = @currentLink.data('title')
     newRange = @model.getRange(rangeTitle)
     return unless newRange
 
@@ -61,10 +72,10 @@ Kearny.TimeControl = Backbone.View.extend
       to: newRange.to
       transform: newRange.transform
 
-    $link.addClass('active')
+    @currentLink.addClass('active')
          .siblings().removeClass('active')
 
   setInitialSlice: ->
-    @$el.find("[data-title='#{@model.initialRange}']")
+    @currentLink = @$el.find("[data-title='#{@model.currentSlice}']")
         .addClass('active')
     @model.setInitialSlice()

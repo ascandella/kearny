@@ -157,6 +157,7 @@ Kearny.AppView = Backbone.View.extend
     @listenTo(@dashboard, 'reset', @addAll)
 
     $(window).on 'resize', _.debounce(_.bind(@resizeAll, this), 100)
+    $('body').on 'keyup', _.bind(@keyUp, this)
 
     # Set the initial size without rendering
     @resizeAll()
@@ -172,6 +173,12 @@ Kearny.AppView = Backbone.View.extend
     @listenTo(@timeSlice, 'change:from', @updateTimeRange)
     @listenTo(@timeSlice, 'change:to',   @updateTimeRange)
 
+
+  keyUp: (e) ->
+    if e.keyCode == 37
+      @timeControl.left()
+    else if e.keyCode == 39
+      @timeControl.right()
 
   addOne: (dataSource) ->
     return unless dataSource.valid()
