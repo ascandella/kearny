@@ -5,7 +5,7 @@
 
 %script{ type: 'text/template', id: 'time-control-template' }
   :plain
-    <% _.each(timeRanges, function(range) {  %>
+    <% _.each(timeWindows, function(range) {  %>
       <a href='#' data-title='<%= range.title %>'>
         <%= range.title %>
       </a>

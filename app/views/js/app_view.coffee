@@ -4,27 +4,38 @@ Kearny.AppView = Backbone.View.extend
   maxWidth: 400
 
   initialize: ->
-    @dashboard = new Kearny.Dashboard(name: 'default')
+    @dashboard     = new Kearny.Dashboard(name: 'default')
+    @configuration = new Kearny.Configuration()
 
     @listenTo(@dashboard, 'add', @addOne)
     @listenTo(@dashboard, 'reset', @addAll)
 
+    @listenTo(@configuration, 'change:dashboards', @dashboardsChanged)
+    @listenTo(@configuration, 'change:timewindows', @timeWindowsChanged)
+
     $(window).on 'resize', _.debounce(_.bind(@resizeAll, this), 100)
     $('body').on 'keyup', _.bind(@keyUp, this)
 
+    @configuration.fetch()
     # Set the initial size without rendering
     @resizeAll()
-    @dashboard.fetch()
     @subviews = []
 
-    @timeSlice = new Kearny.TimeSlice()
+    @timeSlice   = new Kearny.TimeSlice()
     @timeControl = new Kearny.TimeControl(model: @timeSlice)
-    @timeControl.render()
 
     # Right now these both call the same thing. Maybe eventually we'll be able
     # to handle a fancy effect where we expand horizontally.
-    @listenTo(@timeSlice, 'change:from', @updateTimeRange)
-    @listenTo(@timeSlice, 'change:to',   @updateTimeRange)
+    @listenTo(@timeSlice, 'change:from change:to', @updateTimeRange)
+
+  timeWindowsChanged: ->
+    @timeSlice.set(timeWindows: @configuration.get('timewindows'))
+    @timeControl.render()
+
+  dashboardsChanged: ->
+    # TODO: Don't always display the first?
+    @dashboard.name = @configuration.get('dashboards')[0]
+    @dashboard.fetch()
 
   keyUp: (e) ->
     if e.keyCode == 37
