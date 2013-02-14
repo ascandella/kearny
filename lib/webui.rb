@@ -11,6 +11,7 @@ module Kearny
     set :root,  File.expand_path('.')
     set :views, File.join(root, 'app', 'views')
 
+    set :demo, false
     # Make e.g. `environment` available elsewhere
     configure do
       Kearny.settings = settings

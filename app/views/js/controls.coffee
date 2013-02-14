@@ -2,7 +2,10 @@ Kearny.TimeSlice = Backbone.Model.extend
   # TODO: Don't hardcode this
   timeRanges: [
     {
-      title: '4 Hours', from: '-4hours', to: 'now'
+      title: '4 Hours', from: '-4hours', to: 'now',
+      transform: {
+        graphite: 'summarize(%s, "5min")'
+      }
     },
     {
       title: '2 Days',  from: '-2days',  to: 'now',
@@ -11,9 +14,9 @@ Kearny.TimeSlice = Backbone.Model.extend
       }
     },
     {
-      title: '2 Weeks', from: '-2weeks', to: 'now',
+      title: '1 Week', from: '-1week', to: 'now',
       transform: {
-        graphite: 'summarize(%s, "1hour")'
+        graphite: 'summarize(%s, "2hour")'
       }
     },
   ]
