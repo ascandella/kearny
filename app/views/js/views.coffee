@@ -109,14 +109,14 @@ Kearny.DataView = Backbone.View.extend
   generators:
     area: ->
       d3.svg.area()
-            .interpolate('basis')
+            .interpolate('basis-open')
             .x((d) => @xScale(d[1] * 1000))
             .y1((d) => @yScale(d[0]))
             .y0(@height - @yPadding)
 
     line: ->
       d3.svg.line()
-            .interpolate('basis')
+            .interpolate('basis-open')
             .x((d) => @xScale(d[1] * 1000))
             .y((d) => @yScale(d[0]))
 

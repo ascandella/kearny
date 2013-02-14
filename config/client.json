@@ -25,7 +25,7 @@
       "from": "-1week",
       "to": "now",
       "transform": {
-        "graphite": "summarize(%s, \"2hour\")"
+        "graphite": "summarize(%s, \"1hour\")"
       }
     },
     {
