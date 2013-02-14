@@ -1,6 +1,6 @@
 Kearny.DataSource = Backbone.Model.extend
   initialize: ->
-    @on('change:transform', @targetsChanged)
+    @on('change:transform', @transformChanged)
     @on('change:targets', @recordTargets)
     @recordTargets()
 
@@ -28,7 +28,7 @@ Kearny.DataSource = Backbone.Model.extend
       d3.max series.datapoints, (point) -> point[itemIndex]
     [min * multiplier, max * multiplier]
 
-  targetsChanged: ->
+  transformChanged: ->
     transforms = @get('transform')
 
     if transforms

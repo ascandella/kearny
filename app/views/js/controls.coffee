@@ -40,10 +40,7 @@ Kearny.TimeSlice = Backbone.Model.extend
   setInitialSlice: ->
     activeSlice = @getRange(@currentSlice)
 
-    @set
-      from: activeSlice.from
-      to: activeSlice.to
-      transform: activeSlice.transform
+    @set(activeSlice)
 
 Kearny.TimeControl = Backbone.View.extend
   el: '#kearny-time-control'
@@ -79,10 +76,7 @@ Kearny.TimeControl = Backbone.View.extend
     newRange = @model.getRange(rangeTitle)
     return unless newRange
 
-    @model.set
-      from: newRange.from
-      to: newRange.to
-      transform: newRange.transform
+    @model.set(newRange)
 
     @currentLink
       .addClass('active')
