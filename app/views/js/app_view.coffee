@@ -31,9 +31,7 @@ Kearny.AppView = Backbone.View.extend
     @setupAutoAdvance()
 
   setupAutoAdvance: ->
-    @advanceTimer = setInterval =>
-      @advance()
-    , 30000
+    @advanceTimer = setInterval _.bind(@advance, this), 30000
 
   timeWindowsChanged: ->
     @timeSlice.set(timeWindows: @configuration.get('timewindows'))
