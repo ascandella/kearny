@@ -29,6 +29,14 @@
       }
     },
     {
+      "title": "1 Month",
+      "from": "-30days",
+      "to": "now",
+      "transform": {
+        "graphite": "summarize(%s, \"1day\")"
+      }
+    },
+    {
       "title": "2 Months",
       "from": "-60days",
       "to": "now",

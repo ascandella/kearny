@@ -1,5 +1,5 @@
 Kearny.TimeSlice = Backbone.Model.extend
-  currentSlice: '2 Days'
+  currentSlice: '1 Week'
 
   getRange: (name) ->
     _.detect @get('timeWindows'), (range) ->

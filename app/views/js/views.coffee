@@ -55,8 +55,6 @@ Kearny.DataView = Backbone.View.extend
     this
 
   updateDomain: ->
-    console.log("X domain", @model.xDomain()) if @model.get('type') == 'mixpanel'
-
     @xScale = d3.time.scale().domain @model.xDomain()
     @yScale = d3.scale
                 .linear()
@@ -117,14 +115,14 @@ Kearny.DataView = Backbone.View.extend
   generators:
     area: ->
       d3.svg.area()
-            .interpolate('cardinal')
+            .interpolate('basis')
             .x((d) => @xScale(d[1] * 1000))
             .y1((d) => @yScale(d[0]))
             .y0(@height - @yPadding)
 
     line: ->
       d3.svg.line()
-            .interpolate('basis-open')
+            .interpolate('basis')
             .x((d) => @xScale(d[1] * 1000))
             .y((d) => @yScale(d[0]))
 
