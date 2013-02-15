@@ -3,7 +3,6 @@ class KearnyApp
     @setupAutoUpgrade()
     @setupNavigation()
     @setupViews()
-    @setupAutoAdvance()
 
   # Periodically poll the server to see if a new application has been deployed.
   # Useful when run in dashboard mode, where the page is left open indefinitely.
@@ -37,10 +36,6 @@ class KearnyApp
   setupViews: ->
     @appView = new Kearny.AppView()
 
-  setupAutoAdvance: ->
-    advanceTimer = setInterval =>
-      @appView.advance()
-    , 30000
 
 window.Kearny.App = new KearnyApp()
 window.Kearny.log = ->

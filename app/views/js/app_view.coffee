@@ -28,6 +28,13 @@ Kearny.AppView = Backbone.View.extend
     # to handle a fancy effect where we expand horizontally.
     @listenTo(@timeSlice, 'change:from change:to', @updateTimeRange)
 
+    @setupAutoAdvance()
+
+  setupAutoAdvance: ->
+    @advanceTimer = setInterval =>
+      @advance()
+    , 30000
+
   timeWindowsChanged: ->
     @timeSlice.set(timeWindows: @configuration.get('timewindows'))
     @timeControl.render()
@@ -38,6 +45,9 @@ Kearny.AppView = Backbone.View.extend
     @dashboard.fetch()
 
   keyUp: (e) ->
+    clearInterval(@advanceTimer)
+    @setupAutoAdvance
+
     if e.keyCode == 37
       @timeControl.left()
     else if e.keyCode == 39
