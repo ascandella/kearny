@@ -44,7 +44,7 @@ Kearny.AppView = Backbone.View.extend
 
   keyUp: (e) ->
     clearInterval(@advanceTimer)
-    @setupAutoAdvance
+    @setupAutoAdvance()
 
     if e.keyCode == 37
       @timeControl.left()
