@@ -77,11 +77,19 @@ module Kearny
       end
     end
 
+    # TODO Make this a parameter
+    CACHE_TIME = 60 * 60
     def cache(params, &block)
       if cacheable? params
         @@_cache ||= {}
-        logger.info "Cache hit: #{@@_cache.has_key?(params)}"
-        @@_cache[params] ||= yield
+        if @@_cache.has_key?(params)
+          time, data = @@_cache[params]
+          if (Time.now.to_i - CACHE_TIME) < time
+            return data
+          end
+        end
+        @@_cache[params] = [Time.now.to_i, yield]
+        @@_cache[params].last
       else
         yield
       end
