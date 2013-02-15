@@ -39,6 +39,13 @@ module Kearny::Providers
       }
     end
 
+    TIME_PARSER = /(\d+)(.*)/
+    def self.parse_time(friendly)
+      return Time.now unless match = TIME_PARSER.match(friendly)
+
+      Chronic.parse("#{match[1]} #{match[2]} ago")
+    end
+
     def self.config
       Kearny.configuration(name.split('::').last.downcase)
     end
