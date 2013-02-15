@@ -1,8 +1,14 @@
 Kearny.DataSource = Backbone.Model.extend
   initialize: ->
-    @on('change:transform', @transformChanged)
     @on('change:targets', @recordTargets)
+    @on('change:to change:from change:transform', @invalidateData)
     @recordTargets()
+
+  invalidateData: ->
+    if @hasChanged('transform')
+      @transformChanged() # triggers refresh once transform is complete
+    else
+      @trigger('refresh')
 
   fetchData: ->
     @fetch
