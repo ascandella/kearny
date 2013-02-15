@@ -1,4 +1,3 @@
-require 'chronic'
 require 'date'
 require 'mixpanel_client'
 

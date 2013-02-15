@@ -1,4 +1,5 @@
 require 'yaml'
+require 'chronic'
 
 module Kearny::Providers
   class << self
@@ -43,7 +44,7 @@ module Kearny::Providers
     def self.parse_time(friendly)
       return Time.now unless match = TIME_PARSER.match(friendly)
 
-      Chronic.parse("#{match[1]} #{match[2]} ago")
+      ::Chronic.parse("#{match[1]} #{match[2]} ago")
     end
 
     def self.config

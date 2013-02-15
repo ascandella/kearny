@@ -36,7 +36,6 @@ class KearnyApp
   setupViews: ->
     @appView = new Kearny.AppView()
 
-
 window.Kearny.App = new KearnyApp()
 window.Kearny.log = ->
   console.log.apply(console, arguments)

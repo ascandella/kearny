@@ -58,20 +58,42 @@ module Kearny
       Kearny.dashboard(params[:name]).to_json
     end
 
-    post '/data/for' do
+    post '/feed/me/data' do
       # Todo: store these widgets, or throw them away every time?
       content_type :json
       json_params = JSON.parse(request.body.read)
 
-      if provider = Providers.fetch(json_params['type'])
-        source = provider.new(json_params)
-        if Kearny.settings.demo
-          source.demo.to_json
+      cache(json_params) do
+        if provider = Providers.fetch(json_params['type'])
+          source = provider.new(json_params)
+          if Kearny.settings.demo
+            source.demo.to_json
+          else
+            source.get_data.to_json
+          end
         else
-          source.get_data.to_json
+          { error: true, message: 'No such provider' }.to_json
         end
+      end
+    end
+
+    def cache(params, &block)
+      if cacheable? params
+        @@_cache ||= {}
+        logger.info "Cache hit: #{@@_cache.has_key?(params)}"
+        @@_cache[params] ||= yield
       else
-        { error: true, message: 'No such provider' }.to_json
+        yield
+      end
+    end
+
+    # Past this many seconds ago, we cache responses. For fresh requests, e.g.
+    # data that will change today, always fetch from the upstream provider.
+    CUTOFF = 24 * 60 * 60
+    def cacheable?(params)
+      # TODO Move time parsing off Provider namespace
+      if params['from'] && (from = Providers::Base.parse_time(params['from']))
+        (from.to_i + CUTOFF) < Time.now.to_i
       end
     end
 
