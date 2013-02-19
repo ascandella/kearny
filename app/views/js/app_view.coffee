@@ -30,6 +30,8 @@ Kearny.AppView = Backbone.View.extend
 
     @setupAutoAdvance()
 
+  advance: -> @timeControl.right()
+
   setupAutoAdvance: ->
     @advanceTimer = setInterval _.bind(@advance, this), 30000
 
@@ -90,6 +92,3 @@ Kearny.AppView = Backbone.View.extend
         to:        @timeSlice.get('to')
         from:      @timeSlice.get('from')
         transform: @timeSlice.get('transform')
-
-  advance: ->
-    @timeControl.right()

@@ -1,0 +1,34 @@
+@import 'compass/css3/opacity'
+@import 'compass/css3/transition'
+
+@font-face
+  font-family: Batch
+  src: url('../fonts/batch-icons-webfont.eot')
+  src: url('../fonts/batch-icons-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/batch-icons-webfont.woff') format('woff'), url('../fonts/batch-icons-webfont.ttf') format('truetype')
+
+  font-weight: normal
+  font-style: normal
+
+[class^="icon-"],
+[class*=" icon-"]
+  font-family: Batch
+  -webkit-font-smoothing: antialiased
+
+.icon-left:before
+  content: "\f14A"
+
+.icon-right:before
+  content: "\f14B"
+
+.icon
+  font-size: 1.5em
+
+a.icon
+  cursor: pointer
+  @include opacity(0.6)
+  @include transition-property(opacity)
+  @include transition-duration(0.2s)
+
+  &:active,
+  &:hover
+    @include opaque

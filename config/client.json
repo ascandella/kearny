@@ -21,6 +21,7 @@
       }
     },
     {
+      "default": true,
       "title": "1 Week",
       "from": "-1week",
       "to": "now",

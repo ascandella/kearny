@@ -2,12 +2,9 @@
   %h2.title
     <%= title %>
   %h4.error-message
-  .viewport
 
 %script{ type: 'text/template', id: 'time-control-template' }
-  :plain
-    <% _.each(timeWindows, function(range) {  %>
-      <a href='#' data-title='<%= range.title %>'>
-        <%= range.title %>
-      </a>
-    <% }) %>
+  %a.icon.left.icon-left
+  %span.title
+    <%= visibleRange %>
+  %a.icon.right.icon-right

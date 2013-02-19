@@ -1,56 +1,43 @@
 Kearny.TimeSlice = Backbone.Model.extend
-  currentSlice: '1 Week'
+  initialize: ->
+    @on('change:index', @indexChanged)
 
-  getRange: (name) ->
-    _.detect @get('timeWindows'), (range) ->
-      range.title == name
+  defaultIndex: ->
+    preferred = 0
+    # Wish I could use `_.find` here, but it doesn't return  the index
+    _.each @get('timeWindows'), (range, index) =>
+      preferred = index if range.default
+    preferred
 
-  setInitialSlice: ->
-    @set @getRange(@currentSlice)
+  indexChanged: ->
+    newRange = @get('timeWindows')[@get('index')]
+    @set visibleRange: newRange.title
+    @set newRange
+
+  setInitialSlice: -> @set index: @defaultIndex()
+
+  rotate: (direction) ->
+    newIndex = @get('index') + direction
+    newIndex = 0 if newIndex >= @get('timeWindows').length
+
+    @set index: Math.max(0, newIndex)
 
 Kearny.TimeControl = Backbone.View.extend
   el: '#kearny-time-control'
 
+  initialize: ->
+    @listenTo(@model, 'change:visibleRange', @render)
+
   events:
-    'click a': 'changeSlice'
+    'click .left' : 'left'
+    'click .right': 'right'
 
   template: _.template($('#time-control-template').html())
 
-  render: -> @$el.html(@template(@model.toJSON()))
+  render: ->
+    @$el.html(@template(@model.toJSON())) if @model.has('visibleRange')
 
-  moveSlice: (direction) ->
-    nextSlice = @currentLink[direction]()
-    opposite  = if direction == 'prev' then 'next' else 'prev'
-    shuffler  = @currentLink[opposite + 'All']().last()
+  left:  -> @model.rotate(-1)
+  right: -> @model.rotate(1)
 
-    surgicalOperation = if direction == 'next' then 'appendTo' else 'prependTo'
-    shuffler[surgicalOperation](@currentLink.parent())
-
-    if nextSlice.length
-      @moveToSlice(nextSlice)
-
-  left:  -> @moveSlice('prev')
-  right: -> @moveSlice('next')
-
-  changeSlice: (e) ->
-    e.preventDefault()
-    @moveToSlice $(e.currentTarget)
-
-  moveToSlice: (link) ->
-    @currentLink = link
-    rangeTitle   = @currentLink.data('title')
-    newRange     = @model.getRange(rangeTitle)
-    return unless newRange
-
-    @model.set(newRange)
-
-    @currentLink
-      .addClass('active')
-      .siblings()
-        .removeClass('active')
-
-  setInitialSlice: ->
-    @currentLink = @$el.find("[data-title='#{@model.currentSlice}']")
-      .addClass('active')
-
-    @model.setInitialSlice()
+  setInitialSlice: -> @model.setInitialSlice()
