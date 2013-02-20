@@ -30,7 +30,7 @@ class KearnyApp
 
     hideMenu()
 
-    # $nav.mouseover showMenu
+    $nav.mouseover showMenu
     $nav.mouseout hideMenu
 
   setupViews: ->
