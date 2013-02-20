@@ -18,7 +18,10 @@ Kearny.TimeSlice = Backbone.Model.extend
 
   rotate: (direction) ->
     newIndex = @get('index') + direction
-    newIndex = 0 if newIndex >= @get('timeWindows').length
+    if newIndex >= @get('timeWindows').length
+      newIndex = 0
+    else if newIndex < 0
+      newIndex = @get('timeWindows').length - 1
 
     @set index: Math.max(0, newIndex)
 
