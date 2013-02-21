@@ -10,8 +10,9 @@ module Kearny::Providers
 
       metric = metric_class.metrics.elements.first
       datapoints = results.map do |result|
-        [result.send(metric), self.class.to_epoch(result.date)]
-      end
+        next if (point = result.send(metric).to_f) == 0
+        [point, self.class.to_epoch(result.date)]
+      end.compact
 
       # TODO: Support multiple metrics?
       { data: [ target: metric, datapoints: datapoints ] }
