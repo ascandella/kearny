@@ -25,6 +25,14 @@ module Kearny::Providers
       @state = state
     end
 
+    def from_date
+      self.class.parse_time(@state['from']).to_date rescue nil
+    end
+
+    def to_date
+      self.class.parse_time(@state['to']).to_date rescue Time.now
+    end
+
     def demo
       num_points = 50
       start_time = (Time.now - (60 * num_points)).to_i
@@ -45,6 +53,10 @@ module Kearny::Providers
       return Time.now unless match = TIME_PARSER.match(friendly)
 
       ::Chronic.parse("#{match[1]} #{match[2]} ago")
+    end
+
+    def self.to_epoch(date_str)
+      DateTime.parse(date_str).strftime('%s').to_i
     end
 
     def self.config

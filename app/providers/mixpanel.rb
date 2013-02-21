@@ -4,13 +4,11 @@ require 'mixpanel_client'
 module Kearny::Providers
   class Mixpanel < Base
     def get_data
-      from = self.class.parse_time(@state['from']).to_date
-      to   = self.class.parse_time(@state['to']).to_date
 
       data = self.class.client.request(@state['method'], {
         event: @state['targets'][0],
-        from_date: from.to_date.to_s,
-        to_date: to.to_s,
+        from_date: from_date.to_s,
+        to_date: to_date.to_s,
       }.merge(@state['mixpanel']))
 
       { data: transform(data) }
@@ -31,7 +29,7 @@ module Kearny::Providers
         {
           target: name,
           datapoints: points.map do |date, value|
-            [value, DateTime.parse(date).strftime('%s').to_i]
+            [value, self.class.to_epoch(date)]
           end.sort_by { |_, date| date }
         }
       end
