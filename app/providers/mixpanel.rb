@@ -6,10 +6,11 @@ module Kearny::Providers
     def get_data
 
       data = self.class.client.request(@state['method'], {
-        event: @state['targets'][0],
+        event: @state['targets'],
         from_date: from_date.to_s,
+        unit: @state['unit'] || 'day',
         to_date: to_date.to_s,
-      }.merge(@state['mixpanel']))
+      }.merge(@state['mixpanel'] || {}))
 
       { data: transform(data) }
     rescue ::Mixpanel::HTTPError => ex
