@@ -1,2 +1,4 @@
 Gemfile.lock
 .sass-cache
+app/views/style/branding.sass
+public/images/logo.png

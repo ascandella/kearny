@@ -31,6 +31,15 @@ module Kearny
           ]
       end
 
+      def sheets
+        %w[ layout icons theme-normal ].tap do |sheets|
+          if File.exists?(File.join(Kearny.settings.views, 'style',
+                                    'branding.sass'))
+            sheets << 'branding'
+          end
+        end
+      end
+
       def static_data
         {
           version: Kearny.version,
