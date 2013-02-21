@@ -1,0 +1,10 @@
+---
+development:
+  username: username
+  password: password
+  web_property_id: UA-12345-67
+
+production:
+  username: username
+  password: password
+  web_property_id: UA-12345-67

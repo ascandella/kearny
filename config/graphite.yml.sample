@@ -1,0 +1,6 @@
+---
+development:
+  graphite_host: graphite.example.com
+
+production:
+  graphite_host: graphite.example.com
