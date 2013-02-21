@@ -78,7 +78,7 @@ module Kearny
     end
 
     # TODO Make this a parameter
-    CACHE_TIME = 60 * 60
+    CACHE_TIME = Kearny.configuration['cache']['expiry_seconds']
     def cache(params, &block)
       if cacheable? params
         @@_cache ||= {}
@@ -97,7 +97,7 @@ module Kearny
 
     # Past this many seconds ago, we cache responses. For fresh requests, e.g.
     # data that will change today, always fetch from the upstream provider.
-    CUTOFF = 24 * 60 * 60
+    CUTOFF = Kearny.configuration['cache']['cutoff_seconds']
     def cacheable?(params)
       # TODO Move time parsing off Provider namespace
       if params['from'] && (from = Providers::Base.parse_time(params['from']))
