@@ -1,7 +1,6 @@
 class KearnyApp
   constructor: ->
     @setupAutoUpgrade()
-    @setupNavigation()
     @setupViews()
 
   # Periodically poll the server to see if a new application has been deployed.
@@ -14,24 +13,6 @@ class KearnyApp
             Kearny.log "found new version: #{response.version}, reloading..."
             window.location.reload()
     , 60000
-
-  setupNavigation: ->
-    $nav     = $('nav')
-    navTimer = null
-
-    hideMenu = ->
-      navTimer = setTimeout ->
-        $nav.addClass('collapsed')
-      , 3000
-
-    showMenu = ->
-      clearTimeout(navTimer)
-      $nav.removeClass('collapsed')
-
-    hideMenu()
-
-    $nav.mouseover showMenu
-    $nav.mouseout hideMenu
 
   setupViews: ->
     @appView = new Kearny.AppView()
