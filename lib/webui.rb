@@ -62,11 +62,6 @@ module Kearny
       Kearny.client_configuration.to_json
     end
 
-    get '/dashboard/:name' do
-      content_type :json
-      Kearny.dashboard(params[:name]).to_json
-    end
-
     post '/feed/me/data' do
       # Todo: store these widgets, or throw them away every time?
       content_type :json

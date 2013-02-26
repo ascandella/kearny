@@ -1,4 +1,4 @@
 Kearny.Configuration = Backbone.Model.extend
 
-  url: -> "/configuration"
+  url: -> "/client.json"
 

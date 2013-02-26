@@ -4,4 +4,4 @@ Kearny.Dashboard = Backbone.Collection.extend
     # on initial `fetch()` call.
     @name = attributes.name
   model: Kearny.DataSource
-  url: -> "/dashboard/#{@name}"
+  url: -> "/dashboard/#{@name}.json"

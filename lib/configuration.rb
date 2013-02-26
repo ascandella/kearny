@@ -11,11 +11,6 @@ module Kearny
       @@config_store[piece] ||= load_config(piece)
     end
 
-    # User-configurable dashboards, stored in JSON
-    def dashboard(name = 'default')
-      with_dashboard(name) { |file| JSON.parse(file.read) }
-    end
-
     def client_configuration
       with_json_file('client') do |file|
         JSON.parse(file.read)
@@ -37,7 +32,7 @@ module Kearny
   private
 
     def with_json_file(name, mode = 'r')
-      File.open(File.join(settings.root, 'config', "#{name}.json"), mode) do |file|
+      File.open(File.join(settings.root, 'public', "#{name}.json"), mode) do |file|
         yield file if block_given?
       end
     end
