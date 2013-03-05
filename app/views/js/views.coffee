@@ -8,7 +8,6 @@ Kearny.DataView = Backbone.View.extend
 
   initialize: ->
     @listenTo(@model, 'change:data change:error change:format', @dataUpdated)
-    @listenTo(@model, 'change:transform change:to change:from', @contentChanging)
     @listenTo(@model, 'refresh', @fetchData)
 
     @listenTo(@model, 'destroy', @remove)
@@ -17,8 +16,6 @@ Kearny.DataView = Backbone.View.extend
 
   events:
     'click svg': 'cycleFormat'
-
-  contentChanging: -> @$el.removeClass('has-content')
 
   fetchData: -> @model.fetchData()
   getFormat: -> @model.get('format') || @defaultFormat
@@ -128,6 +125,7 @@ Kearny.DataView = Backbone.View.extend
 
   renderGraph: ->
     return if @model.has('error')
+    @$el.removeClass('has-content')
 
     @setupGraph() unless @svg
     @updateDomain()
