@@ -27,7 +27,7 @@ module Kearny
         %w[
             d3 underscore backbone
             configuration models controls app_view views
-            collections application
+            collections router application
           ]
       end
 
@@ -41,14 +41,10 @@ module Kearny
       end
 
       def static_data
-        {
+        @_static_data ||= {
           version: Kearny.version,
         }
       end
-    end
-
-    get '/' do
-      haml :index
     end
 
     get '/configuration' do
@@ -120,6 +116,15 @@ module Kearny
     get '/version' do
       content_type :json
       { version: Kearny.version }.to_json
+    end
+
+    get '/' do
+      haml :index
+    end
+
+    # Handled by backbone, so this is identical
+    get '/dashboard/:name' do
+      haml :index
     end
   end
 end

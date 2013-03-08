@@ -4,8 +4,11 @@ Kearny.AppView = Backbone.View.extend
   maxWidth: 400
 
   initialize: ->
-    @dashboard     = new Kearny.Dashboard(name: 'default')
+    @router        = new Kearny.Router()
+    @dashboard     = new Kearny.Dashboard()
     @configuration = new Kearny.Configuration()
+
+    @listenTo(@router, 'route:dashboard', @changeDashboard)
 
     @listenTo(@dashboard, 'add', @addOne)
     @listenTo(@dashboard, 'reset', @addAll)
@@ -16,7 +19,6 @@ Kearny.AppView = Backbone.View.extend
     $(window).on 'resize', _.debounce(_.bind(@resizeAll, this), 100)
     $('body').on 'keyup', _.bind(@keyUp, this)
 
-    @configuration.fetch()
     # Set the initial size without rendering
     @resizeAll()
     @subviews = []
@@ -29,6 +31,11 @@ Kearny.AppView = Backbone.View.extend
     @listenTo(@timeSlice, 'change:from change:to', @updateTimeRange)
 
     @setupAutoAdvance()
+    Backbone.history.start pushState: true
+
+  changeDashboard: (name) ->
+    @configuration.set(name: name)
+    @configuration.fetch()
 
   advance: -> @timeControl.right()
 

@@ -2,9 +2,9 @@
 %html
   %head
     - sheets.each do |sheet|
-      %link(rel='stylesheet' type='text/css' href="style/#{sheet}.css")
-    %link(rel='stylesheet' type='text/css' href='style/icons.css')
-    %link(rel='stylesheet' type='text/css' href='style/theme-normal.css')
+      %link(rel='stylesheet' type='text/css' href="/style/#{sheet}.css")
+    %link(rel='stylesheet' type='text/css' href='/style/icons.css')
+    %link(rel='stylesheet' type='text/css' href='/style/theme-normal.css')
     %link(rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Open+Sans:400,700')
     %title Kearny
 
@@ -30,4 +30,4 @@
 
     %script(src='http://code.jquery.com/jquery-1.9.1.min.js')
     - includes.each do |script|
-      %script(src="js/#{script}.js")
+      %script(src="/js/#{script}.js")
