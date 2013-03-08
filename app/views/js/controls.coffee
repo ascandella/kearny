@@ -11,6 +11,7 @@ Kearny.TimeSlice = Backbone.Model.extend
 
   indexChanged: ->
     newRange = @get('timeWindows')[@get('index')]
+    @unset('transform', silent: true)
     @set visibleRange: newRange.title
     @set newRange
 
