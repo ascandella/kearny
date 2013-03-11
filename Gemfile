@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 gem 'coffee-script' # sorry i'm not sorry, alex!
 gem 'therubyracer'
