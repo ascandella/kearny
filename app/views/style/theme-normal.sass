@@ -8,6 +8,7 @@ a
 .dataView
   @include transition-property(opacity)
   @include transition-duration(0.3s)
+  @include transparent
 
   display: inline-block
   margin: 1.5em
@@ -16,11 +17,12 @@ a
     margin: 0
     text-align: center
 
-  &.error
-    @include opacity(0.5)
+  &.error,
+  &.loading
+    @include opacity(0.3)
 
-    .error-message
-      display: block
+  &.error .error-message
+    display: block
 
   &.has-content
     @include opaque

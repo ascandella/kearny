@@ -17,7 +17,11 @@ Kearny.DataView = Backbone.View.extend
   events:
     'click svg': 'cycleFormat'
 
-  fetchData: -> @model.fetchData()
+  fetchData: ->
+    @model.fetchData()
+    @$el.addClass('loading')
+        .removeClass('has-content has-data')
+
   getFormat: -> @model.get('format') || @defaultFormat
 
   cycleFormat: ->
@@ -32,6 +36,8 @@ Kearny.DataView = Backbone.View.extend
   template: _.template($('#dataview-template').html())
 
   dataUpdated: ->
+    @$el.removeClass('loading')
+
     if @model.get('error')
       @$el.addClass('error')
           .find('.error-message')
