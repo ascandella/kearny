@@ -1,4 +1,5 @@
 require 'garb'
+require 'rexml/document'
 
 module Kearny::Providers
   class Google < Base
