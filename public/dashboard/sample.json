@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Top Actions Taken",
+    "type": "mixpanel",
+    "targets": "Took Action",
+    "method": "segmentation",
+    "mixpanel": {
+      "on": "properties[\"Action Id\"]"
+    }
+  },
+  {
+    "title": "New Users",
+    "type": "graphite",
+    "targets": ["duckweed.users"]
+  },
+  {
+    "title": "Time on Site",
+    "type": "google",
+    "metrics": "avg_time_on_site",
+    "dimensions": "date"
+  }
+]
