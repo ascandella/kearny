@@ -45,7 +45,7 @@ and [Mixpanel](https://mixpanel.com).
    `config.ru` file is provided for compatibility with the likes of `rackup` and
    `shotgun`.
 
-                unicorn -c config/unicorn.rb
+        unicorn -c config/unicorn.rb
 
 Note that I opted to omit the `unicorn` gem from the Gemfile to keep things
 lean. This assumes you already have it installed. If not, you'll want to `gem
