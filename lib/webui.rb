@@ -24,26 +24,29 @@ module Kearny
 
     helpers do
       def includes
-        %w[
-            d3 underscore backbone
-            configuration models controls app_view views
-            collections router application
-          ]
+        @includes ||=
+          %w[
+              d3 underscore backbone
+              configuration models controls app_view views
+              collections router application
+            ]
       end
 
       def sheets
-        %w[ layout icons theme-normal ].tap do |sheets|
-          if File.exists?(File.join(Kearny.settings.views, 'style',
-                                    'branding.sass'))
-            sheets << 'branding'
+        @sheets ||=
+          %w[ layout icons theme-normal ].tap do |sheets|
+            if File.exists?(File.join(Kearny.settings.views, 'style',
+                                      'branding.sass'))
+              sheets << 'branding'
+            end
           end
-        end
       end
 
       def static_data
-        @_static_data ||= {
-          version: Kearny.version,
-        }
+        @static_data ||=
+          {
+            version: Kearny.version,
+          }
       end
     end
 
@@ -124,6 +127,14 @@ module Kearny
 
     # Handled by backbone, so this is identical
     get '/dashboard/:name' do
+      haml :index
+    end
+
+    get '/test' do
+      includes.concat %w[vendor/mocha test]
+      sheets << 'mocha'
+      @title = 'Kearny Tests'
+
       haml :index
     end
   end
