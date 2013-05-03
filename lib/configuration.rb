@@ -1,3 +1,5 @@
+require 'yaml'
+
 module Kearny
   class << self
     attr_accessor :settings
