@@ -111,9 +111,9 @@ Kearny.DataView = Backbone.View.extend
         .attr('stroke', (_, i) -> z(i))
         .attr('stroke-width', 2)
     area: (el) ->
-       z = d3.scale.category20()
-       el.attr('fill', (_, i) -> z(i))
-         .attr('stroke', 'none')
+      z = d3.scale.category20()
+      el.attr('fill', (_, i) -> z(i))
+        .attr('stroke', 'none')
 
   generators:
     area: ->

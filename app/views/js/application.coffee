@@ -9,9 +9,9 @@ class KearnyApp
     setInterval ->
       Kearny.log "running ping for version newer than #{Kearny.version}"
       $.getJSON '/version', (response) ->
-          if Kearny.version != response.version
-            Kearny.log "found new version: #{response.version}, reloading..."
-            window.location.reload()
+        if Kearny.version != response.version
+          Kearny.log "found new version: #{response.version}, reloading..."
+          window.location.reload()
     , 60000
 
   setupViews: ->
